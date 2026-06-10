@@ -15,3 +15,8 @@ export type AppGraph = {
   nodes: ServiceNode[];
   edges: Edge[];
 };
+
+export type Application = {
+  id: string;
+  name: string;
+};
