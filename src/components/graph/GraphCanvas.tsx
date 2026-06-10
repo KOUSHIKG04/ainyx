@@ -8,22 +8,30 @@ import {
   type Edge,
   type OnEdgesChange,
   type OnNodesChange,
+  type Connection,
+  addEdge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { ServiceNode as ServiceNodeComponent } from "@/components/graph/ServiceNode";
 import { useUiStore } from "@/store/ui-store";
-import "@xyflow/react/dist/style.css";
-import type { ServiceNode as ServiceNodeType } from "@/types/graph";
 
 const nodeTypes = {
   service: ServiceNodeComponent,
 };
 
+const defaultEdgeOptions = {
+  animated: true,
+  style: {
+    stroke: "#6366f1",
+    strokeWidth: 2,
+  },
+};
+
 type GraphCanvasProps = {
-  nodes: ServiceNodeType[];
+  nodes: ServiceNode[];
   edges: Edge[];
   setEdges: Dispatch<SetStateAction<Edge[]>>;
-  onNodesChange: OnNodesChange<ServiceNodeType>;
+  onNodesChange: OnNodesChange<ServiceNode>;
   onEdgesChange: OnEdgesChange<Edge>;
 };
 
@@ -36,7 +44,7 @@ export function GraphCanvas({
 }: GraphCanvasProps) {
   const setSelectedNodeId = useUiStore((state) => state.setSelectedNodeId);
 
-  function handleNodesDelete(deletedNodes: ServiceNodeType[]) {
+  function handleNodesDelete(deletedNodes: ServiceNode[]) {
     const deletedIds = new Set(deletedNodes.map((node) => node.id));
 
     setEdges((currentEdges) =>
@@ -48,12 +56,21 @@ export function GraphCanvas({
     setSelectedNodeId(null);
   }
 
-  //   const nodeTypes = useMemo(
-  //     () => ({
-  //       service: ServiceNodeComponent,
-  //     }),
-  //     [],
-  //   );
+  function handleConnect(connection: Connection) {
+    setEdges((currentEdges) =>
+      addEdge(
+        {
+          ...connection,
+          animated: true,
+          style: {
+            stroke: "#6366f1",
+            strokeWidth: 2,
+          },
+        },
+        currentEdges,
+      ),
+    );
+  }
 
   return (
     <div className="h-full w-full">
@@ -71,6 +88,9 @@ export function GraphCanvas({
         }}
         onNodesDelete={handleNodesDelete}
         deleteKeyCode={["Backspace", "Delete"]}
+        onConnect={handleConnect}
+        defaultEdgeOptions={defaultEdgeOptions}
+        proOptions={{ hideAttribution: true }}
         fitView
       >
         <Background
@@ -80,7 +100,7 @@ export function GraphCanvas({
           color="#334155"
         />
 
-        <Controls />
+        <Controls position="bottom-right" />
       </ReactFlow>
     </div>
   );

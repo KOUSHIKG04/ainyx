@@ -13,10 +13,29 @@ const queryClient = new QueryClient({
   },
 });
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
-  </StrictMode>,
-);
+async function enableMocking(): Promise<void> {
+  const { worker } = await import("@/mocks/browser");
+  await worker.start({
+    onUnhandledRequest: "bypass",
+    serviceWorker: {
+      url: "/mockServiceWorker.js",
+      options: {
+        scope: "/",
+      },
+    },
+  });
+}
+
+void enableMocking()
+  .then(() => {
+    createRoot(document.getElementById("root")!).render(
+      <StrictMode>
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
+      </StrictMode>,
+    );
+  })
+  .catch((error: unknown) => {
+    console.error("Failed to start Mock Service Worker.", error);
+  });
