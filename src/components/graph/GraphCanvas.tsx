@@ -1,75 +1,52 @@
+import type { Dispatch, SetStateAction } from "react";
 import type { ServiceNode } from "@/types/graph";
 import {
   Background,
   BackgroundVariant,
   Controls,
   ReactFlow,
-  useEdgesState,
-  useNodesState,
   type Edge,
+  type OnEdgesChange,
+  type OnNodesChange,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useMemo } from "react";
-import { ServiceNode as ServiceNodeComponent } from "./ServiceNode";
-
-const initialNodes: ServiceNode[] = [
-  {
-    id: "postgres",
-    type: "service",
-    position: { x: 100, y: 100 },
-    data: {
-      name: "Postgres",
-      description: "Primary database",
-      status: "healthy",
-      capacity: 40,
-    },
-  },
-  {
-    id: "redis",
-    type: "service",
-    position: { x: 500, y: 300 },
-    data: {
-      name: "Redis",
-      description: "Application cache",
-      status: "degraded",
-      capacity: 65,
-    },
-  },
-  {
-    id: "mongodb",
-    type: "service",
-    position: { x: 900, y: 120 },
-    data: {
-      name: "MongoDB",
-      description: "Document storage",
-      status: "down",
-      capacity: 80,
-    },
-  },
-];
-
-const initialEdges: Edge[] = [
-  {
-    id: "postgres-redis",
-    source: "postgres",
-    target: "redis",
-  },
-  {
-    id: "redis-mongodb",
-    source: "redis",
-    target: "mongodb",
-  },
-];
+import { ServiceNode as ServiceNodeComponent } from "@/components/graph/ServiceNode";
+import { useUiStore } from "@/store/ui-store";
+import "@xyflow/react/dist/style.css";
+import type { ServiceNode as ServiceNodeType } from "@/types/graph";
 
 const nodeTypes = {
   service: ServiceNodeComponent,
 };
 
-export function GraphCanvas() {
-  const [nodes, setNodes, onNodesChange] =
-    useNodesState<ServiceNode>(initialNodes);
+type GraphCanvasProps = {
+  nodes: ServiceNodeType[];
+  edges: Edge[];
+  setEdges: Dispatch<SetStateAction<Edge[]>>;
+  onNodesChange: OnNodesChange<ServiceNodeType>;
+  onEdgesChange: OnEdgesChange<Edge>;
+};
 
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(initialEdges);
+export function GraphCanvas({
+  nodes,
+  edges,
+  setEdges,
+  onNodesChange,
+  onEdgesChange,
+}: GraphCanvasProps) {
+  const setSelectedNodeId = useUiStore((state) => state.setSelectedNodeId);
+
+  function handleNodesDelete(deletedNodes: ServiceNodeType[]) {
+    const deletedIds = new Set(deletedNodes.map((node) => node.id));
+
+    setEdges((currentEdges) =>
+      currentEdges.filter(
+        (edge) => !deletedIds.has(edge.source) && !deletedIds.has(edge.target),
+      ),
+    );
+
+    setSelectedNodeId(null);
+  }
 
   //   const nodeTypes = useMemo(
   //     () => ({
@@ -86,16 +63,13 @@ export function GraphCanvas() {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        onNodesDelete={(deletedNodes) => {
-          const deletedIds = new Set(deletedNodes.map((node) => node.id));
-
-          setEdges((currentEdges) =>
-            currentEdges.filter(
-              (edge) =>
-                !deletedIds.has(edge.source) && !deletedIds.has(edge.target),
-            ),
-          );
+        onNodeClick={(_, node) => {
+          setSelectedNodeId(node.id);
         }}
+        onPaneClick={() => {
+          setSelectedNodeId(null);
+        }}
+        onNodesDelete={handleNodesDelete}
         deleteKeyCode={["Backspace", "Delete"]}
         fitView
       >
