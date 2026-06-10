@@ -1,0 +1,28 @@
+.react-flow__controls {
+  overflow: hidden;
+  border: 1px solid #273244;
+  border-radius: 10px;
+  background: #111827;
+  box-shadow: none;
+}
+
+.react-flow__controls-button {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-bottom: 1px solid #273244;
+  background: #111827;
+  fill: #cbd5e1;
+}
+
+.react-flow__controls-button:last-child {
+  border-bottom: 0;
+}
+
+.react-flow__controls-button:hover {
+  background: #1e293b;
+}
+
+.react-flow__controls-button svg {
+  fill: #cbd5e1;
+}
