@@ -1,34 +1,8 @@
-import React from "react";
-import {
-  Boxes,
-  Database,
-  GitBranch,
-  Layers3,
-  Server,
-} from "lucide-react";
-
-function Github({ size = 20, ...props }: React.SVGProps<SVGSVGElement> & { size?: number }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-      <path d="M9 18c-4.51 2-5-2-7-2" />
-    </svg>
-  );
-}
+import { Boxes, Database, GitBranch, Layers3, Server } from "lucide-react";
+import { GithubIcon } from "@/components/icons/GithubIcon";
 
 const navigationItems = [
-  { id: "github", label: "Source control", icon: Github },
+  { id: "github", label: "Source control", icon: GithubIcon },
   { id: "database", label: "Databases", icon: Database },
   { id: "services", label: "Services", icon: Server },
   { id: "layers", label: "Layers", icon: Layers3 },
@@ -39,9 +13,8 @@ const navigationItems = [
 export function LeftRail() {
   return (
     <nav
-      className="left-rail"
-      aria-label="Main
-      navigation"
+      className="fixed left-3 top-1/2 z-40 flex -translate-y-1/2 flex-col items-center gap-2 rounded-xl border border-[#29313d] bg-[#0e1013]/95 p-1.5 shadow-[0_16px_40px_rgb(0_0_0/45%)] backdrop-blur max-[560px]:hidden"
+      aria-label="Main navigation"
     >
       {navigationItems.map((item, index) => {
         const Icon = item.icon;
@@ -50,7 +23,11 @@ export function LeftRail() {
           <button
             key={item.id}
             type="button"
-            className={index === 1 ? "left-rail__active" : ""}
+            className={`grid size-[42px] cursor-pointer place-items-center rounded-[9px] border transition-colors ${
+              index === 1
+                ? "border-indigo-600 bg-indigo-600 text-white"
+                : "border-[#29313d] bg-[#171a1f] text-slate-400 hover:bg-[#252b34]"
+            }`}
             aria-label={item.label}
             title={item.label}
           >

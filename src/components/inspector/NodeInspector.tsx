@@ -11,6 +11,7 @@ import type { ServiceNode, ServiceNodeData } from "@/types/graph";
 type NodeInspectorProps = {
   nodes: ServiceNode[];
   setNodes: Dispatch<SetStateAction<ServiceNode[]>>;
+  idPrefix?: string;
 };
 
 const statusLabels = {
@@ -19,7 +20,17 @@ const statusLabels = {
   down: "Down",
 } as const;
 
-export function NodeInspector({ nodes, setNodes }: NodeInspectorProps) {
+const statusBadgeStyles = {
+  healthy: "border-green-800 text-green-400",
+  degraded: "border-yellow-800 text-yellow-300",
+  down: "border-red-800 text-red-400",
+} as const;
+
+export function NodeInspector({
+  nodes,
+  setNodes,
+  idPrefix = "inspector",
+}: NodeInspectorProps) {
   const selectedNodeId = useUiStore((state) => state.selectedNodeId);
 
   const activeTab = useUiStore((state) => state.activeInspectorTab);
@@ -27,6 +38,9 @@ export function NodeInspector({ nodes, setNodes }: NodeInspectorProps) {
   const setActiveTab = useUiStore((state) => state.setActiveInspectorTab);
 
   const selectedNode = nodes.find((node) => node.id === selectedNodeId);
+  const nameInputId = `${idPrefix}-node-name`;
+  const descriptionInputId = `${idPrefix}-node-description`;
+  const capacityInputId = `${idPrefix}-node-capacity`;
 
   function updateSelectedNode(changes: Partial<ServiceNodeData>) {
     if (!selectedNodeId) {
@@ -49,8 +63,8 @@ export function NodeInspector({ nodes, setNodes }: NodeInspectorProps) {
   }
 
   function updateCapacity(value: number) {
-    const safeValue = Math.min(100, Math.max(0, value));
-
+    const roundedValue = Math.round(value);
+    const safeValue = Math.min(100, Math.max(0, roundedValue));
     updateSelectedNode({
       capacity: safeValue,
     });
@@ -58,28 +72,34 @@ export function NodeInspector({ nodes, setNodes }: NodeInspectorProps) {
 
   if (!selectedNode) {
     return (
-      <section className="empty-inspector">
+      <section className="mt-7 border-t border-[#252b34] pt-[22px] text-center text-slate-400">
         <Settings2 size={24} />
 
-        <h3>No node selected</h3>
+        <h3 className="mb-1 mt-3 font-semibold text-slate-50">
+          No node selected
+        </h3>
 
-        <p>Select a service node on the canvas to edit it.</p>
+        <p className="text-[13px]">
+          Select a service node on the canvas to edit it.
+        </p>
       </section>
     );
   }
 
   return (
-    <section className="node-inspector">
-      <div className="node-inspector__title">
+    <section className="mt-7 border-t border-[#252b34] pt-[22px]">
+      <div className="flex items-center justify-between">
         <div>
-          <span>Service Node</span>
-          <h3>{selectedNode.data.name}</h3>
+          <span className="text-[11px] uppercase tracking-[0.08em] text-[#7f8a99]">
+            Service Node
+          </span>
+          <h3 className="mt-1 font-semibold">{selectedNode.data.name}</h3>
         </div>
 
         <Badge
           variant="outline"
-          className={`status-badge status-
-            badge--${selectedNode.data.status}`}
+          className={statusBadgeStyles[selectedNode.data.status]}
+          aria-label={`Node status: ${statusLabels[selectedNode.data.status]}`}
         >
           {statusLabels[selectedNode.data.status]}
         </Badge>
@@ -93,7 +113,7 @@ export function NodeInspector({ nodes, setNodes }: NodeInspectorProps) {
           }
         }}
       >
-        <TabsList className="inspector-tabs">
+        <TabsList className="my-5 grid w-full grid-cols-2">
           <TabsTrigger value="config">
             <Settings2 size={15} />
             Config
@@ -106,11 +126,14 @@ export function NodeInspector({ nodes, setNodes }: NodeInspectorProps) {
         </TabsList>
 
         <TabsContent value="config">
-          <div className="inspector-field">
-            <label htmlFor="node-name">Node name</label>
+          <div className="mb-[18px] grid gap-2">
+            <label className="text-[13px] text-slate-300" htmlFor={nameInputId}>
+              Node name
+            </label>
 
             <Input
-              id="node-name"
+              id={nameInputId}
+              className="border-[#29313d] bg-[#171a1f] text-slate-50"
               value={selectedNode.data.name}
               onChange={(event) => {
                 updateSelectedNode({
@@ -120,11 +143,17 @@ export function NodeInspector({ nodes, setNodes }: NodeInspectorProps) {
             />
           </div>
 
-          <div className="inspector-field">
-            <label htmlFor="node-description">Description</label>
+          <div className="mb-[18px] grid gap-2">
+            <label
+              className="text-[13px] text-slate-300"
+              htmlFor={descriptionInputId}
+            >
+              Description
+            </label>
 
             <Textarea
-              id="node-description"
+              id={descriptionInputId}
+              className="border-[#29313d] bg-[#171a1f] text-slate-50"
               value={selectedNode.data.description}
               onChange={(event) => {
                 updateSelectedNode({
@@ -134,15 +163,21 @@ export function NodeInspector({ nodes, setNodes }: NodeInspectorProps) {
             />
           </div>
 
-          <div className="inspector-field">
-            <div className="capacity-label">
-              <label htmlFor="node-capacity">CPU capacity</label>
+          <div className="mb-[18px] grid gap-2">
+            <div className="flex items-center justify-between">
+              <label
+                className="text-[13px] text-slate-300"
+                htmlFor={capacityInputId}
+              >
+                CPU capacity
+              </label>
 
               <span>{selectedNode.data.capacity}%</span>
             </div>
 
-            <div className="capacity-control">
+            <div className="flex items-center gap-3">
               <Slider
+                aria-label="CPU capacity"
                 value={[selectedNode.data.capacity]}
                 min={0}
                 max={100}
@@ -153,13 +188,18 @@ export function NodeInspector({ nodes, setNodes }: NodeInspectorProps) {
               />
 
               <Input
-                id="node-capacity"
+                id={capacityInputId}
                 type="number"
                 min={0}
                 max={100}
                 value={selectedNode.data.capacity}
+                className="w-[72px] border-[#29313d] bg-[#171a1f] text-slate-50"
                 onChange={(event) => {
-                  updateCapacity(Number(event.target.value));
+                  const value = event.target.valueAsNumber;
+
+                  if (!Number.isNaN(value)) {
+                    updateCapacity(value);
+                  }
                 }}
               />
             </div>
@@ -167,10 +207,14 @@ export function NodeInspector({ nodes, setNodes }: NodeInspectorProps) {
         </TabsContent>
 
         <TabsContent value="runtime">
-          <div className="runtime-card">
-            <span>Current allocation</span>
-            <strong>{selectedNode.data.capacity}%</strong>
-            <p>Runtime information is mocked for this assignment.</p>
+          <div className="rounded-[10px] border border-[#29313d] bg-[#171a1f] p-4">
+            <span className="block">Current allocation</span>
+            <strong className="mt-2 block text-[26px]">
+              {selectedNode.data.capacity}%
+            </strong>
+            <p className="text-[13px] text-slate-400">
+              Runtime information is mocked for this assignment.
+            </p>
           </div>
         </TabsContent>
       </Tabs>

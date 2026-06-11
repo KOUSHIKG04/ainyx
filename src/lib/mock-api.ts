@@ -1,41 +1,37 @@
-import { mockApplications, mockGraphs } from "@/data/mock-data";
 import type { AppGraph, Application } from "@/types/graph";
 
-let shouldSimulateError = false;
+type ApiError = {
+  message?: string;
+};
 
-function wait(duration: number): Promise<void> {
-  return new Promise((resolve) => {
-    window.setTimeout(resolve, duration);
-  });
-}
+async function readJson<T>(
+  response: Response,
+  fallbackMessage: string,
+): Promise<T> {
+  const contentType = response.headers.get("content-type");
 
-export function setMockError(value: boolean): void {
-  shouldSimulateError = value;
+  if (!contentType?.includes("application/json")) {
+    throw new Error(
+      `${fallbackMessage} The mock API did not return JSON. Reload the page to reactivate MSW.`,
+    );
+  }
+
+  const body = (await response.json()) as T | ApiError;
+
+  if (!response.ok) {
+    const error = body as ApiError;
+    throw new Error(error.message ?? fallbackMessage);
+  }
+
+  return body as T;
 }
 
 export async function getApplications(): Promise<Application[]> {
-  await wait(700);
-
-  if (shouldSimulateError) {
-    throw new Error("Failed to load applications.");
-  }
-
-  return structuredClone(mockApplications);
+  const response = await fetch("/api/apps");
+  return readJson<Application[]>(response, "Failed to load applications.");
 }
 
 export async function getApplicationGraph(appId: string): Promise<AppGraph> {
-  await wait(900);
-
-  if (shouldSimulateError) {
-    throw new Error("Failed to load the application graph.");
-  }
-
-  const graph = mockGraphs[appId];
-
-  if (!graph) {
-    throw new Error(`Graph not found for application:
-      ${appId}`);
-  }
-
-  return structuredClone(graph);
+  const response = await fetch(`/api/apps/${encodeURIComponent(appId)}/graph`);
+  return readJson<AppGraph>(response, "Failed to load the application graph.");
 }

@@ -1,73 +1,67 @@
-# React + TypeScript + Vite
+# App Graph Builder
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive infrastructure graph editor built with React, TypeScript,
+ReactFlow, shadcn/ui, TanStack Query, Zustand, and Mock Service Worker.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Screenshot-inspired top bar, icon rail, right panel, and dotted canvas
+- Three-node application graphs with dragging, selection, deletion, zoom, pan,
+  fit view, and edge creation
+- Config and Runtime inspector tabs
+- Status badge, editable node fields, and synchronized capacity controls
+- MSW endpoints for `GET /api/apps` and `GET /api/apps/:appId/graph`
+- TanStack Query loading, error, retry, and per-application caching
+- Zustand-managed app selection, node selection, drawer state, and inspector tab
+- shadcn/ui controls and a mobile Sheet drawer
+- Add Node button and keyboard shortcuts
 
-## React Compiler
+## Setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open the local URL printed by Vite, normally `http://localhost:5173`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Validation
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run typecheck
+npm run lint
+npm run build
 ```
+
+## Keyboard Shortcuts
+
+- `F`: fit the graph into view
+- `P`: toggle the mobile application panel
+- `Delete` or `Backspace`: delete selected graph elements
+
+## Key Decisions
+
+ReactFlow owns mutable node and edge state because its change handlers are
+designed around controlled graph arrays. Zustand stores only cross-component UI
+state and does not duplicate derived node data.
+
+TanStack Query owns server-like application and graph data. Its query keys
+include the application ID, producing an independent cached graph for each app.
+
+MSW intercepts real browser `fetch` requests. This keeps the API client shaped
+like production code while still requiring no backend.
+
+The desktop inspector is an aside. On smaller screens the same panel content is
+rendered in a shadcn Sheet controlled by Zustand.
+
+## Mock Error Demo
+
+Use the warning button in the top bar to enable or disable mocked HTTP 500
+responses. Active queries reset so their loading and error states can be tested.
+
+## Known Limitations
+
+- Mock data and graph edits reset after a full page refresh.
+- Inspector edits are local ReactFlow state and are not submitted to an API.
+- The theme and share buttons are visual placeholders.
+- Authentication and real-time collaboration are not implemented.
