@@ -31,7 +31,7 @@ export function ServiceNode({ data, selected }: NodeProps<ServiceGraphNode>) {
       <Handle
         type="target"
         position={Position.Left}
-        className="!size-2.5 !border-2 !border-white !bg-indigo-500 dark:!border-slate-900"
+        className="size-2.5! border-2! border-white! bg-indigo-500! dark:border-slate-900!"
       />
 
       <header className="flex items-center justify-between">
@@ -99,7 +99,7 @@ export function ServiceNode({ data, selected }: NodeProps<ServiceGraphNode>) {
       <Handle
         type="source"
         position={Position.Right}
-        className="!size-2.5 !border-2 !border-white !bg-indigo-500 dark:!border-slate-900"
+        className="size-2.5! border-2! border-white! bg-indigo-500! dark:border-slate-900!"
       />
     </article>
   );

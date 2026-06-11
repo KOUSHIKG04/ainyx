@@ -46,7 +46,7 @@ export function DatabaseNode({
       <Handle
         type="target"
         position={Position.Left}
-        className="!size-2.5 !border-2 !border-white !bg-emerald-500 dark:!border-slate-900"
+        className="size-2.5! border-2! border-white! bg-emerald-500! dark:border-slate-900!"
       />
 
       <header className="flex items-center justify-between">
@@ -79,7 +79,7 @@ export function DatabaseNode({
 
       <div className="my-[18px] h-[7px] overflow-hidden rounded-full bg-emerald-100 dark:bg-emerald-950">
         <span
-          className="block h-full rounded-[inherit] bg-gradient-to-r from-emerald-500 to-teal-400"
+          className="block h-full rounded-[inherit] bg-linear-to-r from-emerald-500 to-teal-400"
           style={{ width: `${data.capacity}%` }}
         />
       </div>
@@ -98,7 +98,7 @@ export function DatabaseNode({
       <Handle
         type="source"
         position={Position.Right}
-        className="!size-2.5 !border-2 !border-white !bg-emerald-500 dark:!border-slate-900"
+        className="size-2.5! border-2! border-white! bg-emerald-500! dark:border-slate-900!"
       />
     </article>
   );

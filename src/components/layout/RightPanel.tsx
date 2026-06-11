@@ -108,7 +108,7 @@ export function RightPanel({ nodes, setNodes }: RightPanelProps) {
               </span>
             </AccordionTrigger>
 
-            <AccordionContent className="!h-[calc(100vh-82px)] p-0">
+            <AccordionContent className="h-[calc(100vh-82px)]! p-0">
               <ScrollArea className="-mx-4 h-full w-[calc(100%+2rem)]">
                 <div className="px-4 pb-6 pr-6">
                   <h2 className="mb-3 text-xl font-semibold">Applications</h2>
