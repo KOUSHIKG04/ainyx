@@ -1,23 +1,16 @@
 import { create } from "zustand";
+import type { Theme, UiState } from "@/types/ui";
 
-type InspectorTab = "config" | "runtime";
-
-type UiState = {
-  selectedAppId: string;
-  selectedNodeId: string | null;
-  isMobilePanelOpen: boolean;
-  activeInspectorTab: InspectorTab;
-  setSelectedAppId: (appId: string) => void;
-  setSelectedNodeId: (nodeId: string | null) => void;
-  setMobilePanelOpen: (isOpen: boolean) => void;
-  setActiveInspectorTab: (tab: InspectorTab) => void;
-};
+const storedTheme = localStorage.getItem("app-graph-theme");
+const initialTheme: Theme = storedTheme === "light" ? "light" : "dark";
 
 export const useUiStore = create<UiState>((set) => ({
   selectedAppId: "app-1",
   selectedNodeId: null,
+  isWorkspaceOpen: true,
   isMobilePanelOpen: false,
   activeInspectorTab: "config",
+  theme: initialTheme,
 
   setSelectedAppId: (selectedAppId) => {
     set({
@@ -30,11 +23,24 @@ export const useUiStore = create<UiState>((set) => ({
     set({ selectedNodeId });
   },
 
+  setWorkspaceOpen: (isWorkspaceOpen) => {
+    set({ isWorkspaceOpen });
+  },
+
   setMobilePanelOpen: (isMobilePanelOpen) => {
     set({ isMobilePanelOpen });
   },
 
   setActiveInspectorTab: (activeInspectorTab) => {
     set({ activeInspectorTab });
+  },
+
+  toggleTheme: () => {
+    set((state) => {
+      const theme = state.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("app-graph-theme", theme);
+      document.documentElement.classList.toggle("dark", theme === "dark");
+      return { theme };
+    });
   },
 }));

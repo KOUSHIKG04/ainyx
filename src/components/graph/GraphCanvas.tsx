@@ -1,22 +1,24 @@
-import type { Dispatch, SetStateAction } from "react";
-import type { ServiceNode } from "@/types/graph";
+import { useEffect, useRef } from "react";
+import type { GraphNode } from "@/types/graph";
+import type { GraphCanvasProps } from "@/types/components";
 import {
   Background,
   BackgroundVariant,
   Controls,
   ReactFlow,
+  useReactFlow,
   type Edge,
-  type OnEdgesChange,
-  type OnNodesChange,
   type Connection,
   addEdge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { ServiceNode as ServiceNodeComponent } from "@/components/graph/ServiceNode";
+import { DatabaseNode } from "@/components/graph/DatabaseNode";
 import { useUiStore } from "@/store/ui-store";
 
 const nodeTypes = {
   service: ServiceNodeComponent,
+  database: DatabaseNode,
 };
 
 const defaultEdgeOptions = {
@@ -27,14 +29,6 @@ const defaultEdgeOptions = {
   },
 };
 
-type GraphCanvasProps = {
-  nodes: ServiceNode[];
-  edges: Edge[];
-  setEdges: Dispatch<SetStateAction<Edge[]>>;
-  onNodesChange: OnNodesChange<ServiceNode>;
-  onEdgesChange: OnEdgesChange<Edge>;
-};
-
 export function GraphCanvas({
   nodes,
   edges,
@@ -43,8 +37,31 @@ export function GraphCanvas({
   onEdgesChange,
 }: GraphCanvasProps) {
   const setSelectedNodeId = useUiStore((state) => state.setSelectedNodeId);
+  const setWorkspaceOpen = useUiStore((state) => state.setWorkspaceOpen);
+  const setMobilePanelOpen = useUiStore((state) => state.setMobilePanelOpen);
+  const theme = useUiStore((state) => state.theme);
+  const { fitView } = useReactFlow();
+  const hasFittedRef = useRef(false);
 
-  function handleNodesDelete(deletedNodes: ServiceNode[]) {
+  useEffect(() => {
+    if (nodes.length === 0 || hasFittedRef.current) {
+      return;
+    }
+
+    const frameId = window.requestAnimationFrame(() => {
+      void fitView({
+        padding: 0.2,
+        duration: 300,
+      });
+      hasFittedRef.current = true;
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+    };
+  }, [fitView, nodes.length]);
+
+  function handleNodesDelete(deletedNodes: GraphNode[]) {
     const deletedIds = new Set(deletedNodes.map((node) => node.id));
 
     setEdges((currentEdges) =>
@@ -74,7 +91,7 @@ export function GraphCanvas({
 
   return (
     <div className="h-full w-full">
-      <ReactFlow<ServiceNode, Edge>
+      <ReactFlow<GraphNode, Edge>
         nodeTypes={nodeTypes}
         nodes={nodes}
         edges={edges}
@@ -82,6 +99,11 @@ export function GraphCanvas({
         onEdgesChange={onEdgesChange}
         onNodeClick={(_, node) => {
           setSelectedNodeId(node.id);
+          setWorkspaceOpen(true);
+
+          if (window.matchMedia("(max-width: 900px)").matches) {
+            setMobilePanelOpen(true);
+          }
         }}
         onPaneClick={() => {
           setSelectedNodeId(null);
@@ -97,10 +119,10 @@ export function GraphCanvas({
           variant={BackgroundVariant.Dots}
           gap={24}
           size={1.5}
-          color="#334155"
+          color={theme === "dark" ? "#334155" : "#cbd5e1"}
         />
 
-        <Controls position="bottom-right" />
+        <Controls position="bottom-right" orientation="horizontal" />
       </ReactFlow>
     </div>
   );

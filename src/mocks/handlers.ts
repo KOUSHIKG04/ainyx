@@ -3,7 +3,7 @@ import { mockApplications, mockGraphs } from "@/data/mock-data";
 import { isMockErrorEnabled } from "@/mocks/scenario";
 
 export const handlers = [
-  http.get("*/api/apps", async () => {
+  http.get("*/apps", async () => {
     await delay(700);
 
     if (isMockErrorEnabled()) {
@@ -16,7 +16,7 @@ export const handlers = [
     return HttpResponse.json(mockApplications);
   }),
 
-  http.get("*/api/apps/:appId/graph", async ({ params }) => {
+  http.get("*/apps/:appId/graph", async ({ params }) => {
     await delay(900);
 
     if (isMockErrorEnabled()) {

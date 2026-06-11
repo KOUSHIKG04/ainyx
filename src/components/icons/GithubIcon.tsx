@@ -1,8 +1,4 @@
-import type { SVGProps } from "react";
-
-type GithubIconProps = SVGProps<SVGSVGElement> & {
-  size?: number;
-};
+import type { GithubIconProps } from "@/types/components";
 
 export function GithubIcon({
   size = 20,

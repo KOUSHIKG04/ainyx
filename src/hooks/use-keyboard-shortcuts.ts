@@ -1,10 +1,5 @@
 import { useEffect } from "react";
-import type { ReactFlowInstance } from "@xyflow/react";
-
-type ShortcutOptions = {
-  reactFlow: ReactFlowInstance;
-  togglePanel: () => void;
-};
+import type { ShortcutOptions } from "@/types/components";
 
 export function useKeyboardShortcuts({
   reactFlow,

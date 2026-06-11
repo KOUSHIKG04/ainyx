@@ -11,7 +11,7 @@ import { RightPanel } from "./components/layout/RightPanel";
 import { TopBar } from "./components/layout/TopBar";
 import { useApplicationGraph } from "./hooks/use-app-graph";
 import { useUiStore } from "./store/ui-store";
-import type { ServiceNode } from "./types/graph";
+import type { GraphNode } from "./types/graph";
 import { Button } from "./components/ui/button";
 
 function AppContent() {
@@ -21,7 +21,7 @@ function AppContent() {
 
   const graphQuery = useApplicationGraph(selectedAppId);
 
-  const [nodes, setNodes, onNodesChange] = useNodesState<ServiceNode>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<GraphNode>([]);
 
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
@@ -38,13 +38,14 @@ function AppContent() {
 
     setNodes(structuredClone(graphQuery.data.nodes));
     setEdges(structuredClone(graphQuery.data.edges));
-  }, [graphQuery.data, setEdges, setNodes]);
+    setSelectedNodeId(graphQuery.data.nodes[0]?.id ?? null);
+  }, [graphQuery.data, setEdges, setNodes, setSelectedNodeId]);
 
   function addNode() {
     const nodeId = crypto.randomUUID();
     const nodeNumber = nodes.length + 1;
 
-    const newNode: ServiceNode = {
+    const newNode: GraphNode = {
       id: nodeId,
       type: "service",
       position: {
@@ -64,22 +65,22 @@ function AppContent() {
   }
 
   return (
-    <div className="relative h-full w-full bg-[#090b0d] text-slate-50">
+    <div className="relative h-full w-full bg-slate-100 text-slate-950 dark:bg-[#090b0d] dark:text-slate-50">
       <TopBar onAddNode={addNode} />
 
-      <div className="grid h-full min-h-0 grid-cols-[minmax(0,1fr)_320px] max-[900px]:grid-cols-1">
+      <div className="relative h-full min-h-0">
         <LeftRail />
 
-        <main className="relative min-h-0 min-w-0">
+        <main className="relative h-full min-h-0 w-full min-w-0">
           {graphQuery.isPending && (
-            <div className="grid h-full w-full place-content-center justify-items-center text-center text-slate-400">
-              <div className="size-8 animate-spin rounded-full border-[3px] border-[#29313d] border-t-indigo-500" />
+            <div className="grid h-full w-full place-content-center justify-items-center text-center text-slate-500 dark:text-slate-400">
+              <div className="size-8 animate-spin rounded-full border-[3px] border-slate-300 border-t-indigo-500 dark:border-[#29313d] dark:border-t-indigo-500" />
               <p>Loading application graph...</p>
             </div>
           )}
 
           {graphQuery.isError && (
-            <div className="grid h-full w-full place-content-center justify-items-center gap-3 text-center text-slate-400">
+            <div className="grid h-full w-full place-content-center justify-items-center gap-3 text-center text-slate-500 dark:text-slate-400">
               <h2 className="text-xl font-semibold text-red-400">
                 Unable to load graph
               </h2>

@@ -1,4 +1,3 @@
-import type { Dispatch, SetStateAction } from "react";
 import { Activity, Settings2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,13 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUiStore } from "@/store/ui-store";
-import type { ServiceNode, ServiceNodeData } from "@/types/graph";
-
-type NodeInspectorProps = {
-  nodes: ServiceNode[];
-  setNodes: Dispatch<SetStateAction<ServiceNode[]>>;
-  idPrefix?: string;
-};
+import type { GraphNodeData } from "@/types/graph";
+import type { NodeInspectorProps } from "@/types/components";
 
 const statusLabels = {
   healthy: "Healthy",
@@ -30,6 +24,7 @@ export function NodeInspector({
   nodes,
   setNodes,
   idPrefix = "inspector",
+  compact = false,
 }: NodeInspectorProps) {
   const selectedNodeId = useUiStore((state) => state.selectedNodeId);
 
@@ -42,7 +37,7 @@ export function NodeInspector({
   const descriptionInputId = `${idPrefix}-node-description`;
   const capacityInputId = `${idPrefix}-node-capacity`;
 
-  function updateSelectedNode(changes: Partial<ServiceNodeData>) {
+  function updateSelectedNode(changes: Partial<GraphNodeData>) {
     if (!selectedNodeId) {
       return;
     }
@@ -72,26 +67,38 @@ export function NodeInspector({
 
   if (!selectedNode) {
     return (
-      <section className="mt-7 border-t border-[#252b34] pt-[22px] text-center text-slate-400">
+      <section
+        className={`text-center text-slate-500 dark:text-slate-400 ${
+          compact
+            ? "py-4"
+            : "mt-7 border-t border-slate-200 pt-[22px] dark:border-[#252b34]"
+        }`}
+      >
         <Settings2 size={24} />
 
-        <h3 className="mb-1 mt-3 font-semibold text-slate-50">
+        <h3 className="mb-1 mt-3 font-semibold text-slate-950 dark:text-slate-50">
           No node selected
         </h3>
 
         <p className="text-[13px]">
-          Select a service node on the canvas to edit it.
+          Select a node on the canvas to edit it.
         </p>
       </section>
     );
   }
 
   return (
-    <section className="mt-7 border-t border-[#252b34] pt-[22px]">
+    <section
+      className={
+        compact
+          ? "pt-1"
+          : "mt-7 border-t border-slate-200 pt-[22px] dark:border-[#252b34]"
+      }
+    >
       <div className="flex items-center justify-between">
         <div>
-          <span className="text-[11px] uppercase tracking-[0.08em] text-[#7f8a99]">
-            Service Node
+          <span className="text-[11px] uppercase tracking-[0.08em] text-slate-500 dark:text-[#7f8a99]">
+            {selectedNode.type === "database" ? "Database Node" : "Service Node"}
           </span>
           <h3 className="mt-1 font-semibold">{selectedNode.data.name}</h3>
         </div>
@@ -113,13 +120,19 @@ export function NodeInspector({
           }
         }}
       >
-        <TabsList className="my-5 grid w-full grid-cols-2">
-          <TabsTrigger value="config">
+        <TabsList className="my-5 flex h-14 w-full items-center gap-2 overflow-hidden rounded-xl bg-slate-200 dark:bg-[#171a1f]">
+          <TabsTrigger
+            value="config"
+            className="h-7! min-w-0 flex-1 overflow-hidden rounded-xl border-0 px-2 py-0 text-xs text-slate-500 shadow-none after:hidden data-active:bg-white data-active:text-slate-950 data-active:shadow-none dark:text-slate-400 dark:data-active:bg-slate-50 dark:data-active:text-black [&_svg]:size-3.5!"
+          >
             <Settings2 size={15} />
             Config
           </TabsTrigger>
 
-          <TabsTrigger value="runtime">
+          <TabsTrigger
+            value="runtime"
+            className="h-7! min-w-0 flex-1 overflow-hidden rounded-xl border-0 px-2 py-0 text-xs text-slate-500 shadow-none after:hidden data-active:bg-white data-active:text-slate-950 data-active:shadow-none dark:text-slate-400 dark:data-active:bg-slate-50 dark:data-active:text-black [&_svg]:size-3.5!"
+          >
             <Activity size={15} />
             Runtime
           </TabsTrigger>
@@ -127,13 +140,16 @@ export function NodeInspector({
 
         <TabsContent value="config">
           <div className="mb-[18px] grid gap-2">
-            <label className="text-[13px] text-slate-300" htmlFor={nameInputId}>
+            <label
+              className="text-[13px] text-slate-700 dark:text-slate-300"
+              htmlFor={nameInputId}
+            >
               Node name
             </label>
 
             <Input
               id={nameInputId}
-              className="border-[#29313d] bg-[#171a1f] text-slate-50"
+              className="border-slate-300 bg-white text-slate-950 dark:border-[#29313d] dark:bg-[#171a1f] dark:text-slate-50"
               value={selectedNode.data.name}
               onChange={(event) => {
                 updateSelectedNode({
@@ -145,7 +161,7 @@ export function NodeInspector({
 
           <div className="mb-[18px] grid gap-2">
             <label
-              className="text-[13px] text-slate-300"
+              className="text-[13px] text-slate-700 dark:text-slate-300"
               htmlFor={descriptionInputId}
             >
               Description
@@ -153,7 +169,7 @@ export function NodeInspector({
 
             <Textarea
               id={descriptionInputId}
-              className="border-[#29313d] bg-[#171a1f] text-slate-50"
+              className="border-slate-300 bg-white text-slate-950 dark:border-[#29313d] dark:bg-[#171a1f] dark:text-slate-50"
               value={selectedNode.data.description}
               onChange={(event) => {
                 updateSelectedNode({
@@ -166,7 +182,7 @@ export function NodeInspector({
           <div className="mb-[18px] grid gap-2">
             <div className="flex items-center justify-between">
               <label
-                className="text-[13px] text-slate-300"
+                className="text-[13px] text-slate-700 dark:text-slate-300"
                 htmlFor={capacityInputId}
               >
                 CPU capacity
@@ -193,7 +209,7 @@ export function NodeInspector({
                 min={0}
                 max={100}
                 value={selectedNode.data.capacity}
-                className="w-[72px] border-[#29313d] bg-[#171a1f] text-slate-50"
+                className="w-[72px] border-slate-300 bg-white text-slate-950 dark:border-[#29313d] dark:bg-[#171a1f] dark:text-slate-50"
                 onChange={(event) => {
                   const value = event.target.valueAsNumber;
 
@@ -207,12 +223,12 @@ export function NodeInspector({
         </TabsContent>
 
         <TabsContent value="runtime">
-          <div className="rounded-[10px] border border-[#29313d] bg-[#171a1f] p-4">
+          <div className="rounded-[10px] border border-slate-300 bg-slate-50 p-4 dark:border-[#29313d] dark:bg-[#171a1f]">
             <span className="block">Current allocation</span>
             <strong className="mt-2 block text-[26px]">
               {selectedNode.data.capacity}%
             </strong>
-            <p className="text-[13px] text-slate-400">
+            <p className="text-[13px] text-slate-500 dark:text-slate-400">
               Runtime information is mocked for this assignment.
             </p>
           </div>

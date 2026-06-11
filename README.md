@@ -1,31 +1,26 @@
 # App Graph Builder
 
 A responsive infrastructure graph editor built with React, TypeScript,
-ReactFlow, shadcn/ui, TanStack Query, Zustand, and Mock Service Worker.
+React Flow, Tailwind CSS, shadcn/ui, TanStack Query, Zustand, and Mock Service
+Worker.
 
-## Features
+## Setup Instructions
 
-- Screenshot-inspired top bar, icon rail, right panel, and dotted canvas
-- Three-node application graphs with dragging, selection, deletion, zoom, pan,
-  fit view, and edge creation
-- Config and Runtime inspector tabs
-- Status badge, editable node fields, and synchronized capacity controls
-- MSW endpoints for `GET /api/apps` and `GET /api/apps/:appId/graph`
-- TanStack Query loading, error, retry, and per-application caching
-- Zustand-managed app selection, node selection, drawer state, and inspector tab
-- shadcn/ui controls and a mobile Sheet drawer
-- Add Node button and keyboard shortcuts
+### Prerequisites
 
-## Setup
+- Node.js `20.19+` or `22.12+`
+- npm
+
+### Install and run
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite, normally `http://localhost:5173`.
+Open the URL printed by Vite, normally `http://localhost:5173`.
 
-## Validation
+### Validate a change
 
 ```bash
 npm run typecheck
@@ -33,35 +28,40 @@ npm run lint
 npm run build
 ```
 
+## Key Decisions
+
+- React Flow owns the editable node and edge arrays so its drag, connect, and
+  delete handlers work with controlled state.
+- Zustand stores cross-component UI state such as application and node
+  selection, inspector tabs, panel visibility, and theme.
+- TanStack Query handles application graph loading and caching by application
+  ID.
+- MSW provides browser-level mock API endpoints without requiring a backend.
+- The desktop inspector uses a collapsible workspace; smaller screens reuse the
+  inspector in a Sheet. Selecting a node opens the relevant panel.
+- Service and database nodes use separate React Flow node components while
+  sharing the same inspector data contract.
+- Theme preference is stored in `localStorage`.
+
+## Known Limitations
+
+- Application and graph data are mocked; no production backend is connected.
+- Node edits, additions, deletions, positions, and new edges are not persisted.
+  They reset after a refresh or when graph data is loaded again.
+- Runtime values are illustrative rather than live infrastructure metrics.
+- The Share button is currently a visual placeholder.
+- Authentication, authorization, multi-user collaboration, undo/redo, and
+  automated tests are not implemented.
+- The app depends on the MSW service worker starting successfully before React
+  is mounted.
+
 ## Keyboard Shortcuts
 
 - `F`: fit the graph into view
 - `P`: toggle the mobile application panel
 - `Delete` or `Backspace`: delete selected graph elements
 
-## Key Decisions
-
-ReactFlow owns mutable node and edge state because its change handlers are
-designed around controlled graph arrays. Zustand stores only cross-component UI
-state and does not duplicate derived node data.
-
-TanStack Query owns server-like application and graph data. Its query keys
-include the application ID, producing an independent cached graph for each app.
-
-MSW intercepts real browser `fetch` requests. This keeps the API client shaped
-like production code while still requiring no backend.
-
-The desktop inspector is an aside. On smaller screens the same panel content is
-rendered in a shadcn Sheet controlled by Zustand.
-
 ## Mock Error Demo
 
-Use the warning button in the top bar to enable or disable mocked HTTP 500
-responses. Active queries reset so their loading and error states can be tested.
-
-## Known Limitations
-
-- Mock data and graph edits reset after a full page refresh.
-- Inspector edits are local ReactFlow state and are not submitted to an API.
-- The theme and share buttons are visual placeholders.
-- Authentication and real-time collaboration are not implemented.
+Use the warning button in the top bar to toggle mocked HTTP 500 responses.
+Active queries reset so loading, error, and retry states can be tested.
