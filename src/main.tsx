@@ -4,6 +4,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./App";
 import "./index.css";
 
+const storedTheme = localStorage.getItem("app-graph-theme");
+document.documentElement.classList.toggle("dark", storedTheme !== "light");
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

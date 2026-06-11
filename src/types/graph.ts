@@ -2,17 +2,19 @@ import type { Edge, Node } from "@xyflow/react";
 
 export type ServiceStatus = "healthy" | "degraded" | "down";
 
-export type ServiceNodeData = {
+export type GraphNodeData = {
   name: string;
   description: string;
   status: ServiceStatus;
   capacity: number;
 };
 
-export type ServiceNode = Node<ServiceNodeData, "service">;
+export type ServiceGraphNode = Node<GraphNodeData, "service">;
+export type DatabaseGraphNode = Node<GraphNodeData, "database">;
+export type GraphNode = ServiceGraphNode | DatabaseGraphNode;
 
 export type AppGraph = {
-  nodes: ServiceNode[];
+  nodes: GraphNode[];
   edges: Edge[];
 };
 

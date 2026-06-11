@@ -1,6 +1,6 @@
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import { Database, Server } from "lucide-react";
-import type { ServiceNode as ServiceNodeType } from "@/types/graph";
+import { Boxes, Settings2 } from "lucide-react";
+import type { ServiceGraphNode } from "@/types/graph";
 
 const statusStyles = {
   healthy: {
@@ -17,27 +17,27 @@ const statusStyles = {
   },
 } as const;
 
-export function ServiceNode({ data, selected }: NodeProps<ServiceNodeType>) {
+export function ServiceNode({ data, selected }: NodeProps<ServiceGraphNode>) {
   const status = statusStyles[data.status];
 
   return (
     <article
-      className={`relative w-[340px] rounded-[18px] border bg-[#030405] p-5 text-slate-50 shadow-[0_14px_35px_rgb(0_0_0/35%)] max-[560px]:w-[280px] ${
+      className={`relative w-[340px] rounded-[18px] border bg-white p-5 text-slate-950 shadow-[0_14px_35px_rgb(15_23_42/16%)] dark:bg-[#030405] dark:text-slate-50 dark:shadow-[0_14px_35px_rgb(0_0_0/35%)] max-[560px]:w-[280px] ${
         selected
           ? "border-indigo-500 ring-2 ring-indigo-500/25"
-          : "border-[#18202c]"
+          : "border-slate-300 dark:border-[#18202c]"
       }`}
     >
       <Handle
         type="target"
         position={Position.Left}
-        className="!size-2.5 !border-2 !border-slate-900 !bg-indigo-500"
+        className="!size-2.5 !border-2 !border-white !bg-indigo-500 dark:!border-slate-900"
       />
 
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-2.5 text-base">
           <span className="grid size-[34px] place-items-center rounded-[9px] bg-slate-50 text-blue-600">
-            <Database size={18} />
+            <Boxes size={18} />
           </span>
 
           <strong>{data.name}</strong>
@@ -45,33 +45,41 @@ export function ServiceNode({ data, selected }: NodeProps<ServiceNodeType>) {
 
         <button
           type="button"
-          className="nodrag grid size-[34px] cursor-pointer place-items-center rounded-[9px] border-0 bg-[#172033] text-slate-300 hover:bg-[#243047]"
+          className="nodrag grid size-[34px] cursor-pointer place-items-center rounded-[9px] border-0 bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-[#172033] dark:text-slate-300 dark:hover:bg-[#243047]"
           aria-label={`Open settings for ${data.name}`}
         >
-          <Server size={17} />
+          <Settings2 size={17} />
         </button>
       </header>
 
-      <p className="my-4 text-[13px] text-slate-400">{data.description}</p>
+      <p className="my-4 text-[13px] text-slate-500 dark:text-slate-400">
+        {data.description}
+      </p>
 
       <div className="grid grid-cols-3 gap-2">
         <div className="grid gap-1">
-          <span className="text-[11px] text-slate-400">CPU</span>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+            CPU
+          </span>
           <strong className="text-xs">{data.capacity}%</strong>
         </div>
 
         <div className="grid gap-1">
-          <span className="text-[11px] text-slate-400">Memory</span>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+            Memory
+          </span>
           <strong className="text-xs">0.05 GB</strong>
         </div>
 
         <div className="grid gap-1">
-          <span className="text-[11px] text-slate-400">Disk</span>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+            Disk
+          </span>
           <strong className="text-xs">10 GB</strong>
         </div>
       </div>
 
-      <div className="my-[18px] h-[7px] overflow-hidden rounded-full bg-slate-800">
+      <div className="my-[18px] h-[7px] overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
         <span
           className="block h-full rounded-[inherit] bg-gradient-to-r from-blue-600 via-green-500 to-red-500"
           style={{ width: `${data.capacity}%` }}
@@ -91,7 +99,7 @@ export function ServiceNode({ data, selected }: NodeProps<ServiceNodeType>) {
       <Handle
         type="source"
         position={Position.Right}
-        className="!size-2.5 !border-2 !border-slate-900 !bg-indigo-500"
+        className="!size-2.5 !border-2 !border-white !bg-indigo-500 dark:!border-slate-900"
       />
     </article>
   );

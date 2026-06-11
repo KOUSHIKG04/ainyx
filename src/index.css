@@ -146,11 +146,11 @@ body {
 }
 
 .react-flow__controls {
-  @apply overflow-hidden rounded-[10px] border border-[#273244] bg-slate-900 shadow-none;
+  @apply overflow-hidden rounded-[10px] border border-slate-300 bg-white shadow-none dark:border-[#273244] dark:bg-slate-900;
 }
 
 .react-flow__controls-button {
-  @apply size-7 border-0 border-b border-[#273244] bg-slate-900 fill-slate-300;
+  @apply size-7 border-0 border-b border-slate-300 bg-white fill-slate-700 dark:border-[#273244] dark:bg-slate-900 dark:fill-slate-300;
 }
 
 .react-flow__controls-button:last-child {
@@ -158,9 +158,9 @@ body {
 }
 
 .react-flow__controls-button:hover {
-  @apply bg-slate-800;
+  @apply bg-slate-100 dark:bg-slate-800;
 }
 
 .react-flow__controls-button svg {
-  @apply fill-slate-300;
+  @apply fill-slate-700 dark:fill-slate-300;
 }

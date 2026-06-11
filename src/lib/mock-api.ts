@@ -27,11 +27,11 @@ async function readJson<T>(
 }
 
 export async function getApplications(): Promise<Application[]> {
-  const response = await fetch("/api/apps");
+  const response = await fetch("/apps");
   return readJson<Application[]>(response, "Failed to load applications.");
 }
 
 export async function getApplicationGraph(appId: string): Promise<AppGraph> {
-  const response = await fetch(`/api/apps/${encodeURIComponent(appId)}/graph`);
+  const response = await fetch(`/apps/${encodeURIComponent(appId)}/graph`);
   return readJson<AppGraph>(response, "Failed to load the application graph.");
 }

@@ -1,5 +1,5 @@
 import type { Edge } from "@xyflow/react";
-import type { Application, ServiceNode } from "@/types/graph";
+import type { Application, GraphNode } from "@/types/graph";
 
 export const mockApplications: Application[] = [
   { id: "app-1", name: "supertokens-golang" },
@@ -10,7 +10,7 @@ export const mockApplications: Application[] = [
 export const mockGraphs: Record<
   string,
   {
-    nodes: ServiceNode[];
+    nodes: GraphNode[];
     edges: Edge[];
   }
 > = {
@@ -18,7 +18,7 @@ export const mockGraphs: Record<
     nodes: [
       {
         id: "postgres",
-        type: "service",
+        type: "database",
         position: { x: 100, y: 80 },
         data: {
           name: "Postgres",
@@ -40,7 +40,7 @@ export const mockGraphs: Record<
       },
       {
         id: "mongodb",
-        type: "service",
+        type: "database",
         position: { x: 850, y: 100 },
         data: {
           name: "MongoDB",
@@ -79,7 +79,7 @@ export const mockGraphs: Record<
       },
       {
         id: "java-db",
-        type: "service",
+        type: "database",
         position: { x: 600, y: 100 },
         data: {
           name: "Java Database",
