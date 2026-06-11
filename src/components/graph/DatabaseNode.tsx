@@ -1,7 +1,8 @@
-import { Database, HardDrive, type LucideIcon } from "lucide-react";
+import { Database, HardDrive } from "lucide-react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 
 import type { DatabaseGraphNode } from "@/types/graph";
+import type { MetricProps } from "@/types/components";
 
 const statusStyles = {
   healthy: { label: "Healthy", className: "bg-green-500/20 text-green-500" },
@@ -16,11 +17,7 @@ function Metric({
   label,
   value,
   icon: Icon,
-}: {
-  label: string;
-  value: string;
-  icon?: LucideIcon;
-}) {
+}: MetricProps) {
   return (
     <div className="grid gap-1">
       <span className="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400">
@@ -75,7 +72,7 @@ export function DatabaseNode({
       </p>
 
       <div className="grid grid-cols-3 gap-2">
-        <Metric label="Load" value={`${data.capacity}%`} />
+        <Metric label="Capacity" value={`${data.capacity}%`} />
         <Metric label="Memory" value="0.05 GB" />
         <Metric label="Storage" value="10 GB" icon={HardDrive} />
       </div>

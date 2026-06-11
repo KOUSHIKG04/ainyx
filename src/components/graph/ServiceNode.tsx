@@ -36,7 +36,7 @@ export function ServiceNode({ data, selected }: NodeProps<ServiceGraphNode>) {
 
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-2.5 text-base">
-          <span className="grid size-[34px] place-items-center rounded-[9px] bg-slate-50 text-blue-600">
+          <span className="grid size-[34px] place-items-center rounded-[9px] bg-slate-50 text-blue-600 dark:bg-slate-800 dark:text-blue-400">
             <Boxes size={18} />
           </span>
 

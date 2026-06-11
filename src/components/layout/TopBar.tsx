@@ -14,10 +14,7 @@ import { setMockError } from "@/mocks/scenario";
 import { useReactFlow } from "@xyflow/react";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import { Button } from "@/components/ui/button";
-
-type TopBarProps = {
-  onAddNode: () => void;
-};
+import type { TopBarProps } from "@/types/components";
 
 const actionButtonClass =
   "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 hover:text-slate-950 dark:border-[#29313d] dark:bg-[#171a1f] dark:text-slate-200 dark:hover:bg-[#252b34] dark:hover:text-white";

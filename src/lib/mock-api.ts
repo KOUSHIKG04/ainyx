@@ -1,8 +1,5 @@
 import type { AppGraph, Application } from "@/types/graph";
-
-type ApiError = {
-  message?: string;
-};
+import type { ApiError } from "@/types/api";
 
 async function readJson<T>(
   response: Response,

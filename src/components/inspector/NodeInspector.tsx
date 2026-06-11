@@ -1,4 +1,3 @@
-import type { Dispatch, SetStateAction } from "react";
 import { Activity, Settings2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,14 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUiStore } from "@/store/ui-store";
-import type { GraphNode, GraphNodeData } from "@/types/graph";
-
-type NodeInspectorProps = {
-  nodes: GraphNode[];
-  setNodes: Dispatch<SetStateAction<GraphNode[]>>;
-  idPrefix?: string;
-  compact?: boolean;
-};
+import type { GraphNodeData } from "@/types/graph";
+import type { NodeInspectorProps } from "@/types/components";
 
 const statusLabels = {
   healthy: "Healthy",
@@ -88,7 +81,7 @@ export function NodeInspector({
         </h3>
 
         <p className="text-[13px]">
-          Select a service node on the canvas to edit it.
+          Select a node on the canvas to edit it.
         </p>
       </section>
     );

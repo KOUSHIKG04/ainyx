@@ -1,25 +1,8 @@
 import { create } from "zustand";
-
-type InspectorTab = "config" | "runtime";
-export type Theme = "light" | "dark";
+import type { Theme, UiState } from "@/types/ui";
 
 const storedTheme = localStorage.getItem("app-graph-theme");
 const initialTheme: Theme = storedTheme === "light" ? "light" : "dark";
-
-type UiState = {
-  selectedAppId: string;
-  selectedNodeId: string | null;
-  isWorkspaceOpen: boolean;
-  isMobilePanelOpen: boolean;
-  activeInspectorTab: InspectorTab;
-  theme: Theme;
-  setSelectedAppId: (appId: string) => void;
-  setSelectedNodeId: (nodeId: string | null) => void;
-  setWorkspaceOpen: (isOpen: boolean) => void;
-  setMobilePanelOpen: (isOpen: boolean) => void;
-  setActiveInspectorTab: (tab: InspectorTab) => void;
-  toggleTheme: () => void;
-};
 
 export const useUiStore = create<UiState>((set) => ({
   selectedAppId: "app-1",

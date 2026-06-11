@@ -1,4 +1,3 @@
-import type { Dispatch, SetStateAction } from "react";
 import { ChevronRight } from "lucide-react";
 
 import { NodeInspector } from "@/components/inspector/NodeInspector";
@@ -19,12 +18,7 @@ import {
 } from "@/components/ui/sheet";
 import { useApplications } from "@/hooks/use-app";
 import { useUiStore } from "@/store/ui-store";
-import type { GraphNode } from "@/types/graph";
-
-type RightPanelProps = {
-  nodes: GraphNode[];
-  setNodes: Dispatch<SetStateAction<GraphNode[]>>;
-};
+import type { RightPanelProps } from "@/types/components";
 
 export function RightPanel({ nodes, setNodes }: RightPanelProps) {
   const applicationsQuery = useApplications();

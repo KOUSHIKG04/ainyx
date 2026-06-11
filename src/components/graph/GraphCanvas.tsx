@@ -1,5 +1,6 @@
-import { useEffect, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useRef } from "react";
 import type { GraphNode } from "@/types/graph";
+import type { GraphCanvasProps } from "@/types/components";
 import {
   Background,
   BackgroundVariant,
@@ -7,8 +8,6 @@ import {
   ReactFlow,
   useReactFlow,
   type Edge,
-  type OnEdgesChange,
-  type OnNodesChange,
   type Connection,
   addEdge,
 } from "@xyflow/react";
@@ -30,14 +29,6 @@ const defaultEdgeOptions = {
   },
 };
 
-type GraphCanvasProps = {
-  nodes: GraphNode[];
-  edges: Edge[];
-  setEdges: Dispatch<SetStateAction<Edge[]>>;
-  onNodesChange: OnNodesChange<GraphNode>;
-  onEdgesChange: OnEdgesChange<Edge>;
-};
-
 export function GraphCanvas({
   nodes,
   edges,
@@ -50,9 +41,10 @@ export function GraphCanvas({
   const setMobilePanelOpen = useUiStore((state) => state.setMobilePanelOpen);
   const theme = useUiStore((state) => state.theme);
   const { fitView } = useReactFlow();
+  const hasFittedRef = useRef(false);
 
   useEffect(() => {
-    if (nodes.length === 0) {
+    if (nodes.length === 0 || hasFittedRef.current) {
       return;
     }
 
@@ -61,6 +53,7 @@ export function GraphCanvas({
         padding: 0.2,
         duration: 300,
       });
+      hasFittedRef.current = true;
     });
 
     return () => {
@@ -129,7 +122,7 @@ export function GraphCanvas({
           color={theme === "dark" ? "#334155" : "#cbd5e1"}
         />
 
-        <Controls position="bottom-right" />
+        <Controls position="bottom-right" orientation="horizontal" />
       </ReactFlow>
     </div>
   );

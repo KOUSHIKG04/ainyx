@@ -157,6 +157,14 @@ body {
   @apply border-b-0;
 }
 
+.react-flow__controls.horizontal .react-flow__controls-button {
+  @apply border-b-0 border-r border-slate-300 dark:border-[#273244];
+}
+
+.react-flow__controls.horizontal .react-flow__controls-button:last-child {
+  @apply border-r-0;
+}
+
 .react-flow__controls-button:hover {
   @apply bg-slate-100 dark:bg-slate-800;
 }
